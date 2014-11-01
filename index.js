@@ -1,8 +1,21 @@
-var through = require('through')
+var split = require('split')
+  , through = require('through')
+odd = true
 
-var tr = through(function write (buff) {
-    // uppercase incoming words 
-    this.queue(buff.toString().toUpperCase())
-})
-
-process.stdin.pipe(tr).pipe(process.stdout)
+process.stdin
+    .pipe(split())
+    .pipe(through(function (line) {
+        var line = line.toString()
+        
+        // check for odd numbered line
+        if (odd){
+            line = line.toLowerCase()
+        } 
+        else {
+            // uppercase incoming even lines 
+            line = line.toUpperCase()
+        }
+        odd = !odd
+        return console.log(line)
+    }))
+    .pipe(process.stdout)
